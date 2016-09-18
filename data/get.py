@@ -26,13 +26,16 @@ api = twitter.Api(
 def main():
 	search = api.GetSearch(term="test", count=100)
 	pattern = re.compile('[\U0001f600-\U0001f640]')
+	data = []
 	it = 0
 	for i in search:
 		it+=1
-		print(i.AsDict()["text"])
-		print("#"+str(it))
-		hasEmoji = pattern.findall(i.AsDict()["text"])
-		print(hasEmoji)
+		text = i.AsDict()["text"]
+		hasEmoji = pattern.findall(text)
+		if hasEmoji:
+			data.append([re.sub(pattern,'',text	),hasEmoji])
+
+	print(data)
 
 	#print(api.GetSearch(term="test")[0].AsDict()["text"])õ
 
