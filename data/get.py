@@ -1,8 +1,10 @@
+from guess_language import guess_language
 import twitter
 import re
 import requests
 import random
 import time
+import itertools
 
 
 apikey_file = open("apikey.txt", "r")
@@ -18,7 +20,7 @@ dictionary = requests.get('https://raw.githubusercontent.com/first20hours/google
 stopwords = open("stopwords.txt", "r").read().splitlines()
 dictionary = [i for i in dictionary if i not in stopwords]
 
-random.shuffle(dictionary)
+random.shuffle(dictionary[:1000])
 
 
 emojiPattern = re.compile('[\U0001f600-\U0001f640]')
@@ -29,6 +31,7 @@ api = twitter.Api(
 					access_token_key = access_token,
 					access_token_secret = access_token_secret	
 				)
+api.PostUpdate('Test post, please ignore!')
 
 def main():
 
@@ -37,14 +40,13 @@ def main():
 		print("=============")
 		print("Word: "+str(i))
 		print("Progress: "+str((dictionary.index(i)+1)/100*100)+"%")
-		tweets = performSearch(i,5,None)
+		tweets = performSearch(i,10,None)
 		for tweet in tweets:
 			#Tweet Text Goes Here ;; 😂,😂,😂
-			tweetsFile.write(str(tweet[0])+" ;; "+str(','.join(tweet[1])) + "\n")
+			tweetsFile.write(str(tweet[0].rstrip())+" ;; "+str(','.join(tweet[1])) + "\n")
 			#tweetsFile.write("AAAAAAAAAAA")
 		tweetsFile.flush()
 		print("Done Writing")
-		print("=============")
 
 	#print(data)
 
@@ -62,18 +64,20 @@ def performSearch(term,times,ID):
 		else:
 			search = api.GetSearch(term=term, count=100)
 	except twitter.error.TwitterError as e:
-		print("Exception! "+e[0].message)
-		if(e[0].code == 88):
+		print(e.message[0]["message"])
+		if(e.message[0]["code"] == 88):
 			print("Going to sleep")
 			for i in range(0,15):
-				time.sleep(60)
-				print("Have slept "+str(i)+" minutes")
+				time.sleep(1)
+				print("Have slept "+str(i+1	)+" minutes")
+			
+			return []
 
 
 	for i in search:
 		text = i.AsDict()["text"]
 		hasEmoji = emojiPattern.findall(text)
-		if hasEmoji and not text.startswith("RT"):
+		if hasEmoji and not text.startswith("RT") and guess_language(text) == "en":
 			#print(text)
 			data.append([re.sub(emojiPattern,'',text),hasEmoji])
 			lastId = i.id
@@ -82,7 +86,9 @@ def performSearch(term,times,ID):
 	if(len(data) > 1):
 		del data[-1]
 
-	return data + performSearch(term, times-1, lastId)
+	arrToReturn = data + performSearch(term, times-1, lastId)
+	arrToReturn.sort()
+	return list(arrToReturn for arrToReturn,_ in itertools.groupby(arrToReturn))
 
 if __name__ == '__main__':
 	main()
