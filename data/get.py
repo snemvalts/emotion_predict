@@ -31,7 +31,7 @@ api = twitter.Api(
 					access_token_key = access_token,
 					access_token_secret = access_token_secret	
 				)
-api.PostUpdate('Test post, please ignore!')
+#api.PostUpdate('Test post, please ignore!')
 
 def main():
 
@@ -43,7 +43,7 @@ def main():
 		tweets = performSearch(i,10,None)
 		for tweet in tweets:
 			#Tweet Text Goes Here ;; 😂,😂,😂
-			tweetsFile.write(str(tweet[0].rstrip())+" ;; "+str(','.join(tweet[1])) + "\n")
+			tweetsFile.write(str(tweet[0].rstrip().strip("\n"))+" ;; "+str(','.join(tweet[1])) + "\n")
 			#tweetsFile.write("AAAAAAAAAAA")
 		tweetsFile.flush()
 		print("Done Writing")
