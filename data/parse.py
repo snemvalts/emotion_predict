@@ -41,9 +41,18 @@ def remove_links(dataset):
 
 	return return_arr
 
+def remove_mentions(dataset):
+	return_arr = []
+	pattern = re.compile("\@\w+[ . ? !] ?")
+
+	for i in dataset:
+		return_arr.append(pattern.sub('',i))
+
+	return return_arr
+
 def main(functions):
 	if(not functions):
-		functions = ["correct_lines","deserialize_html","remove_links"]
+		functions = ["correct_lines","deserialize_html","remove_links","remove_mentions"]
 	dataset = open("tweets.log","r").read().splitlines()
 	for i in functions:
 		print("Working on: "+i)
