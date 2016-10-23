@@ -23,7 +23,7 @@ dictionary = [i for i in dictionary if i not in stopwords]
 random.shuffle(dictionary[:1000])
 
 
-emojiPattern = re.compile('[\U0001f600-\U0001f640]')
+emoji_pattern = re.compile('[\U0001f600-\U0001f640]')
 
 api = twitter.Api(	
 					consumer_key = consumer_key,
@@ -35,24 +35,24 @@ api = twitter.Api(
 
 def main():
 
-	tweetsFile = open("data/tweets.log","a")	
+	tweet_file = open("data/tweets.log","a")	
 	for i in dictionary[:100]:
 		print("=============")
 		print("Word: "+str(i))
 		print("Progress: "+str((dictionary.index(i)+1)/100*100)+"%")
-		tweets = performSearch(i,10,None)
+		tweets = perform_search(i,10,None)
 		for tweet in tweets:
 			#Tweet Text Goes Here ;; 😂,😂,😂
-			tweetsFile.write(str(tweet[0].rstrip().strip("\n"))+" ;; "+str(','.join(tweet[1])) + "\n")
-			#tweetsFile.write("AAAAAAAAAAA")
-		tweetsFile.flush()
+			tweet_file.write(str(tweet[0].rstrip().strip("\n"))+" ;; "+str(','.join(tweet[1])) + "\n")
+			#tweet_file.write("AAAAAAAAAAA")
+		tweet_file.flush()
 		print("Done Writing")
 
 	#print(data)
 
 	#print(api.GetSearch(term="test")[0].AsDict()["text"])
 
-def performSearch(term,times,ID):
+def perform_search(term,times,ID):
 	if(times <= 0):
 		return []
 	print("Iteration #"+str(times))
@@ -68,7 +68,7 @@ def performSearch(term,times,ID):
 		if(e.message[0]["code"] == 88):
 			print("Going to sleep")
 			for i in range(0,15):
-				time.sleep(1)
+				time.sleep(60)
 				print("Have slept "+str(i+1	)+" minutes")
 			
 			return []
@@ -76,19 +76,19 @@ def performSearch(term,times,ID):
 
 	for i in search:
 		text = i.AsDict()["text"]
-		hasEmoji = emojiPattern.findall(text)
-		if hasEmoji and not text.startswith("RT") and guess_language(text) == "en":
+		has_emoji = emoji_pattern.findall(text)
+		if has_emoji and not text.startswith("RT") and guess_language(text) == "en":
 			#print(text)
-			data.append([re.sub(emojiPattern,'',text),hasEmoji])
+			data.append([re.sub(emoji_pattern,'',text),has_emoji])
 			lastId = i.id
 
 	#remove last otherwise twitter's api returns the tweet last batch ended with
 	if(len(data) > 1):
 		del data[-1]
 
-	arrToReturn = data + performSearch(term, times-1, lastId)
-	arrToReturn.sort()
-	return list(arrToReturn for arrToReturn,_ in itertools.groupby(arrToReturn))
+	return_arr = data + performSearch(term, times-1, lastId)
+	return_arr.sort()
+	return list(return_arr for return_arr,_ in itertools.groupby(return_arr))
 
 if __name__ == '__main__':
 	main()

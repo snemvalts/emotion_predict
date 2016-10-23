@@ -30,7 +30,6 @@ def remove_unpredicted_doublesemis(dataset):
 	for i in dataset:
 		#endswith because some uwu;;$ split doesn't work properly
 		if(len(i.split(";; ")) > 2) or i.endswith(";;"):
-			print(i)
 			it+=1
 			continue
 		else: return_arr.append(i)
