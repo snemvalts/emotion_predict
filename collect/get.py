@@ -7,17 +7,17 @@ import time
 import itertools
 
 
-apikey_file = open("apikey.txt", "r")
+apikey_file = open("auth/apikey.txt", "r")
 consumer_key = apikey_file.readline().rstrip()
 consumer_secret = apikey_file.readline().rstrip()
 
 #create a new app, get the
-access_token_file = open("accesstoken.txt", "r")
+access_token_file = open("auth/accesstoken.txt", "r")
 access_token = access_token_file.readline().rstrip()
 access_token_secret = access_token_file.readline().rstrip()
 
 dictionary = requests.get('https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-usa.txt').text.splitlines()
-stopwords = open("stopwords.txt", "r").read().splitlines()
+stopwords = open("data/stopwords.txt", "r").read().splitlines()
 dictionary = [i for i in dictionary if i not in stopwords]
 
 random.shuffle(dictionary[:1000])
@@ -35,7 +35,7 @@ api = twitter.Api(
 
 def main():
 
-	tweetsFile = open("tweets.log","a")	
+	tweetsFile = open("data/tweets.log","a")	
 	for i in dictionary[:100]:
 		print("=============")
 		print("Word: "+str(i))

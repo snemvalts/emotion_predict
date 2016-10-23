@@ -34,7 +34,7 @@ def remove_unpredicted_doublesemis(dataset):
 			it+=1
 			continue
 		else: return_arr.append(i)
-	print(str(it)+" were broken")
+	print(">"+str(it)+" were broken")
 	return return_arr
 
 def deserialize_html(dataset):
@@ -66,7 +66,7 @@ def remove_mentions(dataset):
 
 def assign_emotions(dataset):
 	return_arr = []
-	reader = csv.reader(open("classification.csv","r"))
+	reader = csv.reader(open("data/classification.csv","r"))
 	emojis = { k:v for k,v,i in reader }
 
 	for i in dataset:
@@ -79,23 +79,28 @@ def assign_emotions(dataset):
 				tweet_emoji[i] = emojis[emoji]
 
 		#TODO: Transform the tweet_emoji array, find the most common, something like that?
-		#print(tweet_emoji)
 		return_arr.append(list[0]+' ;; ' + ','.join(tweet_emoji))
 
 	return return_arr
 
+def remove_emoji(dataset):
+	return_arr = []
+	pattern = re.compile(u'([\U00002600-\U000027BF])|([\U0001f300-\U0001f64F])|([\U0001f680-\U0001f6FF])')
+	for i in dataset:
+		return_arr.append(pattern.sub('',i))
 
+	return return_arr
 
 def main(functions):
 	if(not functions):
-		functions = ["correct_lines","deserialize_html","remove_links","remove_mentions","remove_unpredicted_doublesemis","assign_emotions"]
-	dataset = open("tweets.log","r").read().splitlines()
+		functions = ["correct_lines","deserialize_html","remove_links","remove_mentions","remove_unpredicted_doublesemis","assign_emotions","remove_emoji"]
+	dataset = open("data/tweets.log","r").read().splitlines()
 	for i in functions:
 		print("Working on: "+i)
 		if(globals()[i]):
 			dataset = globals()[i](dataset)
 	
-	open("tweets.processed.log","w").write("\n".join(dataset))
+	open("data/tweets.processed.log","w").write("\n".join(dataset))
 	print("Job's done!")
 
 if __name__ == "__main__":
