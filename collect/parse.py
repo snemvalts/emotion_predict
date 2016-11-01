@@ -24,6 +24,21 @@ def correct_lines(dataset):
 
 	return return_arr
 
+def remove_stopwords(dataset):
+	stopwords = open("data/stopwords.txt", "r").read().splitlines()
+	return_arr = []
+	for i in dataset:
+		str = i
+		for word in stopwords:
+			#TODO: painstakingly slow, takes 4.2x longer with this line alone
+			str = str.replace(" "+word+" "," ")
+			#str = str.replace(" "+word.upper()+" "," ")
+			#str = str.replace(" "+word.capitalize()+" "," ")
+		return_arr.append(str)
+
+	return return_arr
+
+
 def remove_unpredicted_doublesemis(dataset):
 	return_arr = []
 	it = 0
@@ -36,6 +51,7 @@ def remove_unpredicted_doublesemis(dataset):
 	print(">"+str(it)+" were broken")
 	return return_arr
 
+
 def deserialize_html(dataset):
 	return_arr = []
 	parser = htmlparser.HTMLParser()
@@ -44,6 +60,7 @@ def deserialize_html(dataset):
 		return_arr.append(parser.unescape(i))
 
 	return return_arr
+
 
 def remove_links(dataset):
 	return_arr = []
@@ -54,6 +71,7 @@ def remove_links(dataset):
 
 	return return_arr
 
+
 def remove_mentions(dataset):
 	return_arr = []
 	pattern = re.compile("\@\w+[ . ? !] ?")
@@ -63,6 +81,7 @@ def remove_mentions(dataset):
 
 	return return_arr
 
+
 def assign_emotions(dataset):
 	return_arr = []
 	reader = csv.reader(open("data/classification.csv","r"))
@@ -71,7 +90,6 @@ def assign_emotions(dataset):
 	for i in dataset:
 		list = i.split(";; ")
 		tweet_emoji = list[1].split(",")
-
 		for i,emoji in enumerate(tweet_emoji):
 			if(emoji in emojis):
 				#assign the emotion label
@@ -82,6 +100,7 @@ def assign_emotions(dataset):
 
 	return return_arr
 
+
 def remove_emoji(dataset):
 	return_arr = []
 	pattern = re.compile(u'([\U00002600-\U000027BF])|([\U0001f300-\U0001f64F])|([\U0001f680-\U0001f6FF])')
@@ -90,9 +109,10 @@ def remove_emoji(dataset):
 
 	return return_arr
 
+
 def main(functions):
 	if(not functions):
-		functions = ["correct_lines","deserialize_html","remove_links","remove_mentions","remove_unpredicted_doublesemis","assign_emotions","remove_emoji"]
+		functions = ["remove_stopwords","correct_lines","deserialize_html","remove_links","remove_mentions","remove_unpredicted_doublesemis","assign_emotions","remove_emoji"]
 	dataset = open("data/tweets.log","r").read().splitlines()
 	for i in functions:
 		print("Working on: "+i)
