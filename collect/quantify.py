@@ -63,40 +63,6 @@ def letters(dataset):
 
 	print("Max_diff: "+str(max_diff))
 	print("Max_diff_letter: "+max_diff_letter)
-'''
-	print("AMOUNT OF V'S")
-	print("Average amount of positive v's: "+str(pos_v/pos_count))
-	print("Average amount of negative v's: "+str(neg_v/neg_count))
-	print("Erroneous modes: "+str(error))'''
-'''
-def exclusivity(dataset):
-	labels = {}
-	for i in dataset:
-		for j in i[1]:
-			if(j.upper() == j and j not in labels):
-				labels[j] = 1
-	labels = {i:labels for i in labels}
-	
-	#remove occurences of self in subdictionary
-	#not good at pythonic oneliners
-
-	
-	for i in dataset:
-		for j in i[1]:
-			if(j in list(labels.keys())):
-				for k in labels[j]:
-						if(j!=k and j in i[1] and k in i[1]):
-							labels[j][k]+=1
-
-	print(labels)
-	#print("DISTRIBUTION")
-	#for key in labels:
-	#	print("================")
-	#	print("Key: "+key)
-	#	print("Amount: "+str(labels[key]))
-	#	print("Percentage in tweets: "+str(labels[key]/len(dataset)*100)+"%")
-	#print("================")
-'''
 
 
 def main(functions):
