@@ -5,6 +5,7 @@ import re
 import html.parser as htmlparser
 import csv
 from collections import Counter
+import math
 
 def correct_lines(dataset):
 	return_arr = []
@@ -27,14 +28,18 @@ def correct_lines(dataset):
 def remove_stopwords(dataset):
 	stopwords = open("data/stopwords.txt", "r").read().splitlines()
 	return_arr = []
-	for i in dataset:
-		str = i
+	print("> This WILL take a long time")
+	percentages = [math.floor(i/10*len(dataset)) for i in range(0,10)]
+	for j,i in enumerate(dataset):
+		string = i
+		if(j in percentages):
+			print("> "+str(percentages.index(j)*10)+"%",end="\r")
 		for word in stopwords:
 			#TODO: painstakingly slow, takes 4.2x longer with this line alone
-			str = str.replace(" "+word+" "," ")
-			#str = str.replace(" "+word.upper()+" "," ")
-			#str = str.replace(" "+word.capitalize()+" "," ")
-		return_arr.append(str)
+			string = string.replace(" "+word+" "," ")
+			#string = string.replace(" "+word.upper()+" "," ")
+			#string = string.replace(" "+word.capitalize()+" "," ")
+		return_arr.append(string)
 
 	return return_arr
 
@@ -112,7 +117,7 @@ def remove_emoji(dataset):
 
 def main(functions):
 	if(not functions):
-		functions = ["remove_stopwords","correct_lines","deserialize_html","remove_links","remove_mentions","remove_unpredicted_doublesemis","assign_emotions","remove_emoji"]
+		functions = ["correct_lines","remove_stopwords","deserialize_html","remove_links","remove_mentions","remove_unpredicted_doublesemis","assign_emotions","remove_emoji"]
 	dataset = open("data/tweets.log","r").read().splitlines()
 	for i in functions:
 		print("Working on: "+i)
