@@ -40,7 +40,7 @@ def average(dataset):
 def letters(dataset):
 	positive = ["JOY","LOVE"]
 	negative = ["SAD","FEAR","CONTEMPT","ANGER"]
-	max_diff = max_diff_letter = 0
+	max_diff = max_diff_letter = max_pos = max_neg = 0
 	print("LETTERS")
 	for letter in list(string.ascii_lowercase):
 		pos_count = neg_count = pos_letter = neg_letter = 0
@@ -60,6 +60,7 @@ def letters(dataset):
 		if(diff > max_diff):
 			max_diff = diff
 			max_diff_letter = letter
+
 
 	print("Max_diff: "+str(max_diff))
 	print("Max_diff_letter: "+max_diff_letter)
