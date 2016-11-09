@@ -65,10 +65,29 @@ def letters(dataset):
 	print("Max_diff: "+str(max_diff))
 	print("Max_diff_letter: "+max_diff_letter)
 
+def unique(dataset):
+	positive = ["JOY","LOVE"]
+	negative = ["SAD","FEAR","CONTEMPT","ANGER"]
+	unique_pos = unique_neg = not_unique = 0
+	for i in dataset:
+		pos_res = [emotion in positive for emotion in i[1]]
+		neg_res = [emotion in negative for emotion in i[1]]
+
+		if(all(pos_res)):
+			unique_pos+=1
+		elif(all(neg_res)):
+			unique_neg+=1
+		else:
+			not_unique+=1
+
+	print("UNIQUE")
+	print("Positive unique: "+str(unique_pos/len(dataset)*100)+"%")
+	print("Negative unique: "+str(unique_neg/len(dataset)*100)+"%")
+	print("Not unique: "+str(not_unique/len(dataset)*100)+"%")
 
 def main(functions):
 	if(not functions):
-		functions = ["distribution","average","letters"]
+		functions = ["distribution","average","unique","letters"]
 	dataset = open("data/tweets.processed.log","r").read().splitlines()
 	dataset = [i.split(" ;; ") for i in dataset]
 	for i,v in enumerate(dataset):
