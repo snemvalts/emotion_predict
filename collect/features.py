@@ -3,17 +3,66 @@ import csv
 import os
 current_dir = os.path.dirname(__file__)
 
-def a(f):
-	return ["a","b","c"]
+def generate_wordnet_dict(emotion):
+	if(emotion == "positive"):
+		index = 1
+	elif(emotion == "negative"):
+		index = 2
 
-def b(f):
-	return [1,2,3]
+	words = list(csv.reader(open(os.path.join(current_dir,"../supplemental/sentiwordnet.csv"))))
+	del words[0]
+	emotion_dict = {}
+	for i in words:
+		#since some have multiple per word, for each create entry
+		entry_arr = i[3:]
+		for j in entry_arr:
+			emotion_dict[j] = i[index]
 
+	return emotion_dict
+
+
+
+def punctuation(dataset):
+	return_arr = []
+	punctuation = ["!","?","."]
+	for i in dataset:
+		for mark in punctuation:
+			return_arr.append(i[0].count(mark))
+
+	return return_arr
+
+
+def pos_words(dataset):
+	return_arr = []
+	dictionary = generate_wordnet_dict("positive")
+	for i in dataset:
+		score = 0
+		for j in i[0].split(" "):
+			#TODO: this is pretty early, maybe average or something else?
+			if(j in dictionary):
+				score+=float(dictionary[j])
+		return_arr.append(score)
+
+	return return_arr
+
+def neg_words(dataset):
+	return_arr = []
+	dictionary = generate_wordnet_dict("negative")
+	for i in dataset:
+		score = 0
+		for j in i[0].split(" "):
+			#TODO: this is pretty early, maybe average or something else?
+			if(j in dictionary):
+				score+=float(dictionary[j])
+		return_arr.append(score)
+
+	return return_arr
 
 def main(functions):
 	if(not functions):
-		functions = ["a","b"]
+		functions = ["pos_words","neg_words","punctuation"]
 	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
+	dataset = [i.split(" ;; ") for i in dataset]
 	'''
 	this will be a matrix of features * n dimensions, like this
 	[
