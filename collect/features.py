@@ -1,15 +1,19 @@
 import sys
 import csv
+import os
+current_dir = os.path.dirname(__file__)
 
 def a(f):
 	return ["a","b","c"]
 
 def b(f):
 	return [1,2,3]
+
+
 def main(functions):
 	if(not functions):
 		functions = ["a","b"]
-	dataset = open("data/tweets.processed.log","r").read().splitlines()
+	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
 	'''
 	this will be a matrix of features * n dimensions, like this
 	[
@@ -33,7 +37,7 @@ def main(functions):
 		for i in featurematrix:
 			featureset[j].append(i[j])
 
-	f = open("data/tweets.features.csv","w")
+	f = open(os.path.join(current_dir,"data/tweets.features.csv"),"w")
 	writer = csv.writer(f)
 	writer.writerows(featureset)
 

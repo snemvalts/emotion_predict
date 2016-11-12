@@ -1,7 +1,8 @@
 import sys
 from statistics import mode
 import string
-
+import os
+current_dir = os.path.dirname(__file__)
 
 def distribution(dataset):
 	labels = {}
@@ -88,7 +89,7 @@ def unique(dataset):
 def main(functions):
 	if(not functions):
 		functions = ["distribution","average","unique","letters"]
-	dataset = open("data/tweets.processed.log","r").read().splitlines()
+	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
 	dataset = [i.split(" ;; ") for i in dataset]
 	for i,v in enumerate(dataset):
 		dataset[i][1] = dataset[i][1].split(",")

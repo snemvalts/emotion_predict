@@ -6,6 +6,8 @@ import html.parser as htmlparser
 import csv
 from collections import Counter
 import math
+import os
+current_dir = os.path.dirname(__file__)
 
 def correct_lines(dataset):
 	return_arr = []
@@ -26,7 +28,7 @@ def correct_lines(dataset):
 	return return_arr
 
 def remove_stopwords(dataset):
-	stopwords = open("data/stopwords.txt", "r").read().splitlines()
+	stopwords = open(os.path.join(current_dir,"../supplemental/stopwords.txt"), "r").read().splitlines()
 	return_arr = []
 	print("> This WILL take a long time")
 	percentages = [math.floor(i/10*len(dataset)) for i in range(0,10)]
@@ -89,7 +91,7 @@ def remove_mentions(dataset):
 
 def assign_emotions(dataset):
 	return_arr = []
-	reader = csv.reader(open("data/classification.csv","r"))
+	reader = csv.reader(open(os.path.join(current_dir,"data/classification.csv"),"r"))
 	emojis = { k:v for k,v,i in reader }
 
 	for i in dataset:
@@ -118,13 +120,13 @@ def remove_emoji(dataset):
 def main(functions):
 	if(not functions):
 		functions = ["correct_lines","remove_stopwords","deserialize_html","remove_links","remove_mentions","remove_unpredicted_doublesemis","assign_emotions","remove_emoji"]
-	dataset = open("data/tweets.log","r").read().splitlines()
+	dataset = open(os.path.join(current_dir,"data/tweets.log"),"r").read().splitlines()
 	for i in functions:
 		print("Working on: "+i)
 		if(globals()[i]):
 			dataset = globals()[i](dataset)
 	
-	open("data/tweets.processed.log","w").write("\n".join(dataset))
+	open(os.path.join(current_dir,"data/tweets.processed.log"),"w").write("\n".join(dataset))
 	print("Job's done!")
 
 if __name__ == "__main__":
