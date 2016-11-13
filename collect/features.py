@@ -20,7 +20,10 @@ def generate_wordnet_dict(emotion):
 
 	return emotion_dict
 
-
+def normalize(arr):
+	max_arr = max(arr)
+	min_arr = min(arr)
+	return [(i-min_arr)/(max_arr-min_arr) for i in arr]
 
 def punctuation(dataset):
 	return_arr = []
@@ -43,7 +46,8 @@ def pos_words(dataset):
 				score+=float(dictionary[j])
 		return_arr.append(score)
 
-	return return_arr
+	return normalize(return_arr)
+
 
 def neg_words(dataset):
 	return_arr = []
@@ -56,13 +60,44 @@ def neg_words(dataset):
 				score+=float(dictionary[j])
 		return_arr.append(score)
 
+
+	return normalize(return_arr)
+
+
+#TODO: modify the original parser for intensity
+def pos_real(dataset):
+	positive = ["JOY","LOVE"]
+	return_arr = []
+	for i in dataset:
+		pos = 0 
+		for j in i[1]:
+			if(j in positive): pos+=1
+		return_arr.append(pos/len(i[1]))
+
+
 	return return_arr
+
+
+def neg_real(dataset):
+	negative = ["SAD","FEAR","CONTEMPT","ANGER"]
+	return_arr = []
+	for i in dataset:
+		neg = 0
+		for j in i[1]:
+			if(j in negative): 
+				neg+=1
+		return_arr.append(neg/len(i[1]))
+
+	return return_arr
+
 
 def main(functions):
 	if(not functions):
-		functions = ["pos_words","neg_words","punctuation"]
+		functions = ["pos_words","neg_words","punctuation","pos_real","neg_real"]
 	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
 	dataset = [i.split(" ;; ") for i in dataset]
+	for i,v in enumerate(dataset):
+		dataset[i][1] = dataset[i][1].split(",")
 	'''
 	this will be a matrix of features * n dimensions, like this
 	[
@@ -88,6 +123,7 @@ def main(functions):
 
 	f = open(os.path.join(current_dir,"data/tweets.features.csv"),"w")
 	writer = csv.writer(f)
+	writer.writerow(functions)
 	writer.writerows(featureset)
 
 	print("Job's done!")
