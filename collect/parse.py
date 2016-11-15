@@ -103,7 +103,7 @@ def assign_emotions(dataset):
 				tweet_emoji[i] = emojis[emoji]
 
 		#TODO: Transform the tweet_emoji array, find the most common, something like that?
-		return_arr.append(list[0]+' ;; ' + ','.join(tweet_emoji))
+		return_arr.append(list[0].rstrip()+' ;; ' + ','.join(tweet_emoji))
 
 	return return_arr
 
