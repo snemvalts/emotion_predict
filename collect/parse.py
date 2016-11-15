@@ -91,19 +91,25 @@ def remove_mentions(dataset):
 
 def assign_emotions(dataset):
 	return_arr = []
-	reader = csv.reader(open(os.path.join(current_dir,"data/classification.csv"),"r"))
+	file = open(os.path.join(current_dir,"data/classification.csv"),"r")
+	reader = csv.reader(file)
 	emojis = { k:v for k,v,i in reader }
+	file.seek(0)
+	scores = { k:i for k,v,i in reader }
 
 	for i in dataset:
 		list = i.split(";; ")
 		tweet_emoji = list[1].split(",")
+		tweet_emoji_score = [0]*len(tweet_emoji)
 		for i,emoji in enumerate(tweet_emoji):
 			if(emoji in emojis):
 				#assign the emotion label
 				tweet_emoji[i] = emojis[emoji]
+				tweet_emoji_score[i] = scores[emoji]
+
 
 		#TODO: Transform the tweet_emoji array, find the most common, something like that?
-		return_arr.append(list[0].rstrip()+' ;; ' + ','.join(tweet_emoji))
+		return_arr.append(list[0].rstrip()+' ;; ' + ','.join(tweet_emoji) + ' ;; ' + ','.join(map(str,tweet_emoji_score)))
 
 	return return_arr
 
