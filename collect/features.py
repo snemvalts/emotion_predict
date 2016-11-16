@@ -15,15 +15,18 @@ def generate_wordnet_dict(emotion):
 	for i in words:
 		#since some have multiple per word, for each create entry
 		entry_arr = i[3:]
+		#TODO: this is the wildcard, modify this
 		for j in entry_arr:
 			emotion_dict[j] = i[index]
 
 	return emotion_dict
 
+
 def normalize(arr):
 	max_arr = max(arr)
 	min_arr = min(arr)
 	return [(i-min_arr)/(max_arr-min_arr) for i in arr]
+
 
 def punctuation(dataset):
 	return_arr = []
@@ -46,7 +49,7 @@ def pos_words(dataset):
 				score+=float(dictionary[j])
 		return_arr.append(score)
 
-	return normalize(return_arr)
+	return return_arr
 
 
 def neg_words(dataset):
@@ -61,7 +64,7 @@ def neg_words(dataset):
 		return_arr.append(score)
 
 
-	return normalize(return_arr)
+	return return_arr
 
 
 #TODO: modify the original parser for intensity
@@ -70,8 +73,9 @@ def pos_real(dataset):
 	return_arr = []
 	for i in dataset:
 		pos = 0 
-		for j in i[1]:
-			if(j in positive): pos+=1
+		for it,j in enumerate(i[1]):
+			if(j in positive):
+				pos+=i[2][it]
 		return_arr.append(pos/len(i[1]))
 
 
@@ -83,9 +87,8 @@ def neg_real(dataset):
 	return_arr = []
 	for i in dataset:
 		neg = 0
-		for j in i[1]:
-			if(j in negative): 
-				neg+=1
+		for it,j in enumerate(i[1]):
+			if(j in negative): neg+=i[2][it]
 		return_arr.append(neg/len(i[1]))
 
 	return return_arr
@@ -93,11 +96,13 @@ def neg_real(dataset):
 
 def main(functions):
 	if(not functions):
-		functions = ["pos_words","neg_words","punctuation","pos_real","neg_real"]
+		functions = ["pos_words","neg_words","pos_real","neg_real","punctuation"]
 	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
 	dataset = [i.split(" ;; ") for i in dataset]
 	for i,v in enumerate(dataset):
 		dataset[i][1] = dataset[i][1].split(",")
+		dataset[i][2] = [float(j) for j in dataset[i][2].split(",")]
+
 	'''
 	this will be a matrix of features * n dimensions, like this
 	[
@@ -119,7 +124,10 @@ def main(functions):
 	for j,a in enumerate(featurematrix[0]):
 		featureset.append([])
 		for i in featurematrix:
-			featureset[j].append(i[j])
+			if(isinstance(i[j],float)):
+				featureset[j].append("%.2f" % i[j])
+			else:
+				featureset[j].append(i[j])
 
 	f = open(os.path.join(current_dir,"data/tweets.features.csv"),"w")
 	writer = csv.writer(f)
