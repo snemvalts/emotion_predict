@@ -1,6 +1,7 @@
 import sys
 import csv
 import os
+import math
 current_dir = os.path.dirname(__file__)
 
 def generate_wordnet_dict(emotion):
@@ -29,14 +30,30 @@ def normalize(arr):
 
 
 def punctuation(dataset):
-	return_arr = []
-	punctuation = ["!","?","."]
-	for i in dataset:
-		for mark in punctuation:
-			return_arr.append(i[0].count(mark))
+	return amount_of_character(dataset,["!","?","."])
 
-	return return_arr
 
+def amount_of_i(dataset):
+	return amount_of_character(dataset,["i","I"])
+
+
+def summed_words(dataset):
+	pos = pos_words(dataset)
+	neg = neg_words(dataset)
+	summed = []
+	for it, i in enumerate(pos):
+		summed.append(i+-1*neg[it])
+
+	return normalize(summed)
+
+def words_competition(dataset):
+	pos = pos_words(dataset)
+	neg = neg_words(dataset)
+	total = []
+	for p, n in zip(pos,neg):
+		total.append(p+n)
+
+	return normalize(total)
 
 def pos_words(dataset):
 	return_arr = []
@@ -67,7 +84,25 @@ def neg_words(dataset):
 	return return_arr
 
 
-#TODO: modify the original parser for intensity
+def summed_real(dataset):
+	pos = pos_real(dataset)
+	neg = neg_real(dataset)
+	summed = []
+	for it, i in enumerate(pos):
+		summed.append(i+-1*neg[it])
+
+	return normalize(summed)
+
+
+def real_competition(dataset):
+	pos = pos_real(dataset)
+	neg = neg_real(dataset)
+	total = []
+	for p, n in zip(pos,neg):
+		total.append(p+n)
+
+	return normalize(total)
+
 def pos_real(dataset):
 	positive = ["JOY","LOVE"]
 	return_arr = []
@@ -93,10 +128,21 @@ def neg_real(dataset):
 
 	return return_arr
 
+def amount_of_character(dataset,letterset):
+	return_arr = []
+	for i in dataset:
+		for mark in letterset:
+			try:
+				return_arr.append(math.log10(i[0].count(mark)))
+			except ValueError:
+				#can't take log of 0
+				return_arr.append(0)
+	return normalize(return_arr)
 
 def main(functions):
 	if(not functions):
-		functions = ["pos_words","neg_words","pos_real","neg_real","punctuation"]
+		#functions = ["summed_words","pos_real","neg_real","punctuation","amount_of_i"]
+		functions = ["summed_words","words_competition","summed_real","real_competition","punctuation","amount_of_i"]
 	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
 	dataset = [i.split(" ;; ") for i in dataset]
 	for i,v in enumerate(dataset):

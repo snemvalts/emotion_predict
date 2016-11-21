@@ -58,7 +58,12 @@ def letters(dataset):
 				neg_count += 1
 				neg_letter += i[0].lower().count(letter)
 		diff = abs((pos_letter/pos_count)-(neg_letter/neg_count))
+		print(pos_letter/pos_count)
+		print(neg_letter/neg_count)
 		if(diff > max_diff):
+			print("DIFF CHANGE")
+			print("old max: "+str(max_diff))
+			print("old letter: "+str(max_diff_letter))
 			max_diff = diff
 			max_diff_letter = letter
 
