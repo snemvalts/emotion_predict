@@ -143,7 +143,8 @@ def main(functions):
 	if(not functions):
 		#functions = ["summed_words","pos_real","neg_real","punctuation","amount_of_i"]
 		#functions = ["summed_words","words_competition","summed_real","real_competition","punctuation","amount_of_i"]
-		functions = ["summed_words","punctuation","amount_of_i","summed_real"]
+		#functions = ["summed_words","punctuation","amount_of_i","summed_real"]
+		functions = ["pos_words","neg_words","amount_of_i","punctuation","pos_real","neg_real"]
 	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
 	dataset = [i.split(" ;; ") for i in dataset]
 	for i,v in enumerate(dataset):
