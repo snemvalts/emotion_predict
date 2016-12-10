@@ -59,29 +59,37 @@ def pos_words(dataset):
 	return_arr = []
 	dictionary = generate_wordnet_dict("positive")
 	for i in dataset:
-		score = 0
+		scores = []
 		for j in i[0].split(" "):
 			#TODO: this is pretty early, maybe average or something else?
 			if(j in dictionary):
-				score+=float(dictionary[j])
-		return_arr.append(score)
+				scores.append(float(dictionary[j]))
+		
+		if(len(scores) == 0):
+			return_arr.append(0)
+		else:
+			return_arr.append(sum(scores)/len(scores))
 
-	return return_arr
+	return normalize(return_arr)
 
 
 def neg_words(dataset):
 	return_arr = []
 	dictionary = generate_wordnet_dict("negative")
 	for i in dataset:
-		score = 0
+		scores = []
 		for j in i[0].split(" "):
 			#TODO: this is pretty early, maybe average or something else?
 			if(j in dictionary):
-				score+=float(dictionary[j])
-		return_arr.append(score)
+				scores.append(float(dictionary[j]))
+		
+		if(len(scores) == 0):
+			return_arr.append(0)
+		else:
+			return_arr.append(sum(scores)/len(scores))
 
 
-	return return_arr
+	return normalize(return_arr)
 
 
 def summed_real(dataset):
@@ -114,7 +122,7 @@ def pos_real(dataset):
 		return_arr.append(pos/len(i[1]))
 
 
-	return return_arr
+	return normalize(return_arr)
 
 
 def neg_real(dataset):
@@ -126,7 +134,7 @@ def neg_real(dataset):
 			if(j in negative): neg+=i[2][it]
 		return_arr.append(neg/len(i[1]))
 
-	return return_arr
+	return normalize(return_arr)
 
 def amount_of_character(dataset,letterset):
 	return_arr = []
