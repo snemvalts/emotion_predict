@@ -147,12 +147,23 @@ def amount_of_character(dataset,letterset):
 				return_arr.append(0)
 	return normalize(return_arr)
 
+def all_upper(dataset):
+	return_arr = []
+	for i in dataset:
+		score = 0
+		for j in i[0].split(" "):
+			if(j == j.upper()):
+				score+=1
+		return_arr.append(score)
+	
+	return normalize(return_arr)
+
 def main(functions):
 	if(not functions):
 		#functions = ["summed_words","pos_real","neg_real","punctuation","amount_of_i"]
 		#functions = ["summed_words","words_competition","summed_real","real_competition","punctuation","amount_of_i"]
 		#functions = ["summed_words","punctuation","amount_of_i","summed_real"]
-		functions = ["pos_words","neg_words","amount_of_i","punctuation","pos_real","neg_real"]
+		functions = ["pos_words","neg_words","amount_of_i","punctuation","all_upper","pos_real","neg_real"]
 	dataset = open(os.path.join(current_dir,"data/tweets.processed.log"),"r").read().splitlines()
 	dataset = [i.split(" ;; ") for i in dataset]
 	for i,v in enumerate(dataset):
