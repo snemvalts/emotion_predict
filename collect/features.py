@@ -11,6 +11,8 @@ def generate_wordnet_dict(emotion):
 		index = 2
 
 	words = list(csv.reader(open(os.path.join(current_dir,"../supplemental/sentiwordnet.csv"))))
+	acronyms = list(csv.reader(open(os.path.join(current_dir,"../supplemental/acronyms.csv"))))
+
 	del words[0]
 	emotion_dict = {}
 	for i in words:
@@ -19,6 +21,9 @@ def generate_wordnet_dict(emotion):
 		#TODO: this is the wildcard, modify this
 		for j in entry_arr:
 			emotion_dict[j] = i[index]
+
+	for j in acronyms:
+		emotion_dict[j[3]] = j[index]
 
 	return emotion_dict
 
@@ -62,8 +67,8 @@ def pos_words(dataset):
 		scores = []
 		for j in i[0].split(" "):
 			#TODO: this is pretty early, maybe average or something else?
-			if(j in dictionary):
-				scores.append(float(dictionary[j]))
+			if(j.lower() in dictionary):
+				scores.append(float(dictionary[j.lower()]))
 		
 		if(len(scores) == 0):
 			return_arr.append(0)
@@ -80,8 +85,8 @@ def neg_words(dataset):
 		scores = []
 		for j in i[0].split(" "):
 			#TODO: this is pretty early, maybe average or something else?
-			if(j in dictionary):
-				scores.append(float(dictionary[j]))
+			if(j.lower() in dictionary):
+				scores.append(float(dictionary[j.lower()]))
 		
 		if(len(scores) == 0):
 			return_arr.append(0)
